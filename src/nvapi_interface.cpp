@@ -3,6 +3,15 @@
 #include "util/util_string.h"
 #include "util/util_log.h"
 
+// Forward decls for our local Blackwell/Streamline stubs (defined in
+// nvapi_blackwell_stubs.cpp). These NVAPI IDs aren't published in any released
+// NVAPI SDK, so they don't appear in external/nvapi/nvapi.h.
+extern "C" NvAPI_Status __cdecl NVAPI_Notify_PresentBarrierSupported();
+extern "C" NvAPI_Status __cdecl Streamline_Private_ad298d3f();
+extern "C" NvAPI_Status __cdecl Streamline_Private_33c7358c();
+extern "C" NvAPI_Status __cdecl Streamline_Private_593e8644();
+extern "C" NvAPI_Status __cdecl NGX_Private_a782ea46();
+
 using namespace dxvk;
 
 static const auto disabledEnvName = "DXVK_NVAPI_DISABLE_ENTRYPOINTS";
@@ -219,6 +228,14 @@ NVAPI_QUERY_INTERFACE nvapi_QueryInterface(NvU32 id) {
     INSERT_AND_RETURN_WHEN_EQUALS(NvAPI_GetErrorMessage)
     INSERT_AND_RETURN_WHEN_EQUALS(NvAPI_Unload)
     INSERT_AND_RETURN_WHEN_EQUALS(NvAPI_Initialize)
+    // dxvk-nvapi local additions: NVIDIA-internal NVAPI IDs queried by
+    // Streamline's closed DLSS-G plugin, the NGX runtime, and RE Engine games
+    // on RTX 50-series under Proton. See src/nvapi_blackwell_stubs.cpp.
+    INSERT_AND_RETURN_WHEN_EQUALS(NVAPI_Notify_PresentBarrierSupported)
+    INSERT_AND_RETURN_WHEN_EQUALS(Streamline_Private_ad298d3f)
+    INSERT_AND_RETURN_WHEN_EQUALS(Streamline_Private_33c7358c)
+    INSERT_AND_RETURN_WHEN_EQUALS(Streamline_Private_593e8644)
+    INSERT_AND_RETURN_WHEN_EQUALS(NGX_Private_a782ea46)
     /* End */
 
 #undef INSERT_AND_RETURN_WHEN_EQUALS

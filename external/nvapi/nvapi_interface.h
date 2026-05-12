@@ -545,6 +545,22 @@ struct NVAPI_INTERFACE_TABLE nvapi_interface_table[] =
     { "NvAPI_RegisterRiseCallback", 0x9cfe8f94 },
     { "NvAPI_RequestRise", 0x5047de98 },
     { "NvAPI_UninstallRise", 0xab8d09f6 },
+
+    /* dxvk-nvapi local additions: NVIDIA-internal NVAPI IDs not published in
+     * any released NVAPI SDK through R595. They are queried by NVIDIA-built
+     * binaries (Streamline 2.x DLSS-G plugin, _nvngx.dll runtime) and by
+     * RE Engine games (PRAGMATA) on RTX 50-series under Proton.
+     *
+     * Only NVAPI_Notify_PresentBarrierSupported has a recovered name (Tier 2:
+     * the only NVAPI name string in PRAGMATA.exe). The other four are blind
+     * stubs whose semantics are inferred to be "feature-supported capability
+     * query" based on call-site analysis. See dxvk-nvapi-research.md.
+     */
+    { "NVAPI_Notify_PresentBarrierSupported", 0xd7c61344 },
+    { "Streamline_Private_ad298d3f", 0xad298d3f },
+    { "Streamline_Private_33c7358c", 0x33c7358c },
+    { "Streamline_Private_593e8644", 0x593e8644 },
+    { "NGX_Private_a782ea46", 0xa782ea46 },
 };
 
 #endif // _NVAPI_INTERFACE_H

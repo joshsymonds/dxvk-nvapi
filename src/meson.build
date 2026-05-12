@@ -29,6 +29,7 @@ nvapi_src = files([
   'nvapi_ngx.cpp',
   'nvapi_sys.cpp',
   'nvapi_vulkan.cpp',
+  'nvapi_blackwell_stubs.cpp',
   'nvapi_interface.cpp',
 ])
 
