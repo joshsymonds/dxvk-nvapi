@@ -481,6 +481,19 @@ NVAPI_FUNCTION NvAPI_D3D12_GetGraphicsCapabilities(IUnknown* pDevice, NvU32 stru
     // so we might be wrong here in case of an old VKD3D-Proton version or when VKD3D_DISABLE_EXTENSIONS is in use
     pGraphicsCaps->bVariablePixelRateShadingSupported = adapter->IsVkDeviceExtensionSupported(VK_KHR_FRAGMENT_SHADING_RATE_EXTENSION_NAME);
 
+    // CUDA Streaming Multiprocessor version mirrors the graphics SM version on
+    // every NVIDIA architecture — they're the same physical SM. The original
+    // implementation initialised both pairs to 0 but only set the graphics
+    // pair, leaving the CUDA pair at 0. Capcom RE Engine titles (PRAGMATA in
+    // particular) require majorCudaSMVersion > 0 to enable Path Tracing /
+    // Ray Reconstruction, since those paths use CUDA-D3D12 interop
+    // (NvAPI_D3D12_CreateCubinComputeShader*, NvAPI_D3D12_IsFatbinPTXSupported)
+    // for the denoiser/accumulator stage and need a valid CUDA SM target to
+    // JIT cubin shaders against. Without this, the in-game RT/PT options stay
+    // grayed out with no tooltip explanation.
+    pGraphicsCaps->majorCudaSMVersion = pGraphicsCaps->majorSMVersion;
+    pGraphicsCaps->minorCudaSMVersion = pGraphicsCaps->minorSMVersion;
+
     return Ok(str::format(n, " (sm_", pGraphicsCaps->majorSMVersion, pGraphicsCaps->minorSMVersion, ")"));
 }
 
